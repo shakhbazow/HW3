@@ -1,6 +1,6 @@
 
 /*
- * *** YOUR NAME GOES HERE / YOUR SECTION NUMBER ***
+ * *** Emil Shahbazov / 272-01 ***
  *
  * This java file is a Java object implementing simple AVL Tree.
  * You are to complete the deleteElement method.
@@ -361,8 +361,77 @@ class LUC_AVLTree {
          * code for each. You can also look at the method InsertElement, as it has do
          * do many of the same things as this method.
          */
+        if (node == null) {
+            return null;
+        }
+
+        // perform bst delete
+        if (value < node.value) {
+
+            node.leftChild = deleteElement(value, node.leftChild); // value is in left subtree
+        } else if (value > node.value) {
+
+            node.rightChild = deleteElement(value, node.rightChild);  // value is in the right subtree
+        } else {
+
+            if (node.leftChild == null || node.rightChild == null) {
+                // has one child or no child
+                Node temp = (node.leftChild != null) ? node.leftChild : node.rightChild;
+
+                if (temp == null) {
+                    // no chuld case
+                    node = null;
+                } else {
+                    // one child case
+                    node = temp;
+                }
+            } else {
+               // node has two children, get inorder priority
+                Node temp = minValueNode(node.rightChild);
+
+                node.value = temp.value;
+                // delete
+                node.rightChild = deleteElement(temp.value, node.rightChild);
+            }
+        }
+
+        // if tree has one node then return
+        if (node == null) {
+            return null;
+        }
+
+        // update height of the current node
+        node.height = getMaxHeight(getHeight(node.leftChild), getHeight(node.rightChild)) + 1;
+
+        // get the balance factor to check whether this node became unbalanced
+        int bf = getBalanceFactor(node);
+
+        // if node unbalancedd perform rotations
+
+        // ll
+        if (bf > 1 && getBalanceFactor(node.leftChild) >= 0) {
+            return LLRotation(node);
+        }
+
+        //lr
+        if (bf > 1 && getBalanceFactor(node.leftChild) < 0) {
+            node.leftChild = RRRotation(node.leftChild);
+            return LLRotation(node);
+        }
+
+        // rr
+        if (bf < -1 && getBalanceFactor(node.rightChild) <= 0) {
+            return RRRotation(node);
+        }
+
+        // rl
+        if (bf < -1 && getBalanceFactor(node.rightChild) > 0) {
+            node.rightChild = LLRotation(node.rightChild);
+            return RRRotation(node);
+        }
 
         return node;
+       // return node;
     }
 
 
@@ -426,7 +495,7 @@ class LUC_AVLTree {
      *        / \                        /   \    /  \
      *       zl  zr                     zr   zl  yr  xr
      *
-     *  @param X - node that is out of balance
+     * //@param X - node that is out of balance
      *
      *  @return Y - new top node of [sub]tree after rotation
      */
@@ -463,7 +532,7 @@ class LUC_AVLTree {
      *           / \                 /   \    /  \
      *          zl  zr              yl   zl  zr  xr
      *
-     *  @param X - node that is out of balance
+     * // @param X - node that is out of balance
      *
      *  @return Z - new top of the [sub]tree after rotation
      */
@@ -503,7 +572,7 @@ class LUC_AVLTree {
      *                     / \                 /   \    /  \
      *                    zl  zr              xl   yl  zl  zr
      *
-     *  @param X - node that is out of balance
+     * //  @param X - node that is out of balance
      *
      *  @return Y - new top node of [sub]tree after rotation
      */
@@ -539,7 +608,7 @@ class LUC_AVLTree {
      *          / \                       /   \    /  \
      *         zl  zr                    xl   zl  zr  yr
      *
-     *  @param X - node that is out of balance
+     * // @param X - node that is out of balance
      *
      *  @return Z - new top of the [sub]tree after rotation
      */
